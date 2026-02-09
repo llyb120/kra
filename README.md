@@ -1,4 +1,4 @@
-# FuckReact
+# Kra - Kick React's Ass
 
 基于细粒度响应式的 React 状态管理库。使用 Signal 作为状态原语，通过自动依赖追踪实现按需更新，无需手动管理依赖数组。
 
@@ -13,19 +13,19 @@
 ## 安装
 
 ```bash
-npm install fuckreact
+npm install kra
 ```
 
 或直接引入源文件：
 
 ```js
-import { signal, component, createEffect } from './fuckreact.js';
+import { signal, component, createEffect } from './kra.js';
 ```
 
 ## 快速开始
 
 ```jsx
-import { signal, component } from 'fuckreact';
+import { signal, component } from 'kra';
 
 const Counter = component(function Counter() {
   const count = signal(0);
@@ -188,7 +188,7 @@ export const Toggle = component(function Toggle() {
 使用 `batch` 合并多次状态更新为单次渲染：
 
 ```jsx
-import { batch } from 'fuckreact';
+import { batch } from 'kra';
 
 const updateProfile = () => {
   batch(() => {
@@ -257,7 +257,7 @@ const Button = component(function Button(props) {
 核心响应式系统可脱离 React 独立使用：
 
 ```js
-import { createSignal, createComputed, createEffect } from 'fuckreact';
+import { createSignal, createComputed, createEffect } from 'kra';
 
 const count = createSignal(0);
 const doubled = createComputed(() => count() * 2);

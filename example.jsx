@@ -1,5 +1,5 @@
 /**
- * FuckReact使用示例 - SolidJS 风格
+ * kra使用示例 - SolidJS 风格
  */
 import React from 'react';
 import ReactDOM from 'react-dom/client';
@@ -14,7 +14,7 @@ import {
   onCleanup,
   provide,
   want,
-} from './fuckreact';
+} from './kra';
 
 // ============================================================
 // 示例 1：基础计数器（直接返回 JSX）
@@ -280,7 +280,7 @@ function App() {
 
   return (
     <div style={{ padding: 20, fontFamily: 'sans-serif' }}>
-      <h1>FuckReact响应式系统演示</h1>
+      <h1>kra响应式系统演示</h1>
       <hr />
       <Counter />
       <hr />

@@ -1,5 +1,5 @@
 /**
- * SuperState 使用示例 - SolidJS 风格
+ * FuckReact使用示例 - SolidJS 风格
  */
 import React from 'react';
 import ReactDOM from 'react-dom/client';
@@ -14,7 +14,7 @@ import {
   onCleanup,
   provide,
   want,
-} from './superstate';
+} from './fuckreact';
 
 // ============================================================
 // 示例 1：基础计数器（直接返回 JSX）
@@ -213,10 +213,10 @@ const Greeting = component(function Greeting(props) {
 });
 
 // ============================================================
-// 示例 10：Context 注入（provide / inject）
+// 示例 10：Context 注入（provide / want）
 // ============================================================
 
-// 孙组件：直接 inject(key) 获取祖辈 provide 的值，无需经过中间组件传递
+// 孙组件：直接 want(key) 获取祖辈 provide 的值，无需经过中间组件传递
 const ThemeLabel = component(function ThemeLabel() {
   const theme = want('theme');
   // theme 是一个 signal，读取即自动追踪
@@ -254,7 +254,7 @@ const ContextDemo = component(function ContextDemo() {
   const theme = signal('light');
   const user = signal({ name: '小明' });
 
-  // 向后代注入（字符串 key，子组件通过同名 key inject）
+  // 向后代注入（字符串 key，子组件通过同名 key want）
   provide('theme', theme);
   provide('user', user);
 
@@ -280,8 +280,7 @@ function App() {
 
   return (
     <div style={{ padding: 20, fontFamily: 'sans-serif' }}>
-      <h1>SuperState 响应式系统演示</h1>
-      <p style={{ color: '#666' }}>SolidJS 风格：signal() + component() + createEffect()</p>
+      <h1>FuckReact响应式系统演示</h1>
       <hr />
       <Counter />
       <hr />

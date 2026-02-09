@@ -1,5 +1,5 @@
 /**
- * SuperState 核心响应式引擎 - 单元测试
+ * FuckReact核心响应式引擎 - 单元测试
  *
  * 覆盖：
  *  1. createSignal    - 读/写/peek/函数式更新/类型
@@ -19,7 +19,7 @@ import {
   batch,
   untrack,
   signal,
-} from './superstate.js';
+} from './fuckreact.js';
 
 // ============================================================
 //  1. createSignal

@@ -1,5 +1,5 @@
 /**
- * SuperState React 集成测试
+ * FuckReactReact 集成测试
  *
  * 覆盖两种模式：
  *   模式 A：return () => JSX（setup 真正只执行一次）
@@ -17,7 +17,7 @@ import {
   component,
   batch,
   onCleanup,
-} from './superstate.js';
+} from './fuckreact.js';
 
 afterEach(cleanup);
 

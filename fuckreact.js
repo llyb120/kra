@@ -1,5 +1,5 @@
 /**
- * SuperState - SolidJS 风格的 React 响应式系统
+ * FuckReact- SolidJS 风格的 React 响应式系统
  *
  * component(fn) 中 fn 只执行一次（setup），返回渲染函数 () => JSX。
  * 也可以直接返回 JSX（自动按索引复用 signal/effect，跳过重复副作用）。

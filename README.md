@@ -202,12 +202,12 @@ const updateProfile = () => {
 
 ### 依赖注入
 
-使用 `provide` 和 `want` 实现跨层级数据传递：
+使用 `share` 和 `want` 实现跨层级数据传递：
 
 ```jsx
 const Parent = component(function Parent() {
   const config = signal({ theme: 'dark' });
-  provide('config', config);
+  share('config', config);
 
   return () => <Child />;
 });
@@ -287,7 +287,7 @@ count(99); // 无输出
 | `batch(fn)` | 批量更新，合并渲染 |
 | `untrack(fn)` | 执行函数但不追踪依赖 |
 | `onCleanup(fn)` | 注册组件卸载时的清理回调 |
-| `provide(key, value)` | 向后代组件注入值 |
+| `share(key, value)` | 向后代组件注入值 |
 | `want(key, fallback?)` | 获取祖辈注入的值 |
 
 ## License

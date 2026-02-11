@@ -12,7 +12,7 @@ import {
   batch,
   untrack,
   onCleanup,
-  provide,
+  share,
   want,
 } from './kra';
 
@@ -213,10 +213,10 @@ const Greeting = component(function Greeting(props) {
 });
 
 // ============================================================
-// 示例 10：Context 注入（provide / want）
+// 示例 10：Context 注入（share / want）
 // ============================================================
 
-// 孙组件：直接 want(key) 获取祖辈 provide 的值，无需经过中间组件传递
+// 孙组件：直接 want(key) 获取祖辈 share 的值，无需经过中间组件传递
 const ThemeLabel = component(function ThemeLabel() {
   const theme = want('theme');
   // theme 是一个 signal，读取即自动追踪
@@ -249,18 +249,18 @@ const MiddleLayer = component(function MiddleLayer() {
   );
 });
 
-// 顶层组件：provide 数据
+// 顶层组件：share 数据
 const ContextDemo = component(function ContextDemo() {
   const theme = signal('light');
   const user = signal({ name: '小明' });
 
   // 向后代注入（字符串 key，子组件通过同名 key want）
-  provide('theme', theme);
-  provide('user', user);
+  share('theme', theme);
+  share('user', user);
 
   return () => (
     <div>
-      <h3>Context 注入（provide / want）</h3>
+      <h3>Context 注入（share / want）</h3>
       <button onClick={() => theme(t => t === 'light' ? 'dark' : 'light')}>
         切换主题
       </button>

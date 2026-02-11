@@ -1,4 +1,4 @@
-import {component, provide, signal, slot} from "./kra"
+import {component, share, signal, slot} from "./kra"
 
 const Counter = component((props) => {
     const count2 = want("count2"); // must be provided，如果不存在直接报错
@@ -22,13 +22,13 @@ const child = component(() => {
     const count2 = single(0)
 
     // 第一 暴露一个object，所有key value会注入子元素
-    provide({
+    share({
         count,
         count2
     })
 
     // 第二 2个参数
-    const count3 = provide("count", () => signal(0))
+    const count3 = share("count", () => signal(0))
 
 
     // override("print_logic", () => {

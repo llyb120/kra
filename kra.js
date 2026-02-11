@@ -109,7 +109,7 @@ const OwnerContext = React.createContext(null);
 // ============================================================
 
 /**
- * provide(key, value) — 在当前组件中向后代注入值。
+ * share(key, value) — 在当前组件中向后代注入值。
  *
  * 必须在 component() 的 setup 阶段调用。
  * 子组件通过 inject(key) 获取，无需逐层传递 props。
@@ -120,14 +120,14 @@ const OwnerContext = React.createContext(null);
  * @example
  *   const Parent = component(() => {
  *     const theme = signal('dark');
- *     provide('theme', theme);
+ *     share('theme', theme);
  *     return () => <Child />;
  *   });
  */
-export function provide(key, value) {
+export function share(key, value) {
   const owner = currentOwner;
   if (!owner) {
-    console.warn('provide() must be called inside a component setup.');
+    console.warn('share() must be called inside a component setup.');
     return;
   }
   if (!owner._provided) owner._provided = {};
@@ -135,13 +135,13 @@ export function provide(key, value) {
 }
 
 /**
- * inject(key, fallback?) — 获取最近祖辈 provide 的值。
+ * inject(key, fallback?) — 获取最近祖辈 share 的值。
  *
  * 沿 owner 父链向上查找；找不到则返回 fallback（若提供），否则返回 undefined。
  *
  * 必须在 component() 的 setup 阶段调用。
  *
- * @param {string|symbol} key  注入的键名（与 provide 的 key 对应）
+ * @param {string|symbol} key  注入的键名（与 share 的 key 对应）
  * @param {*} [fallback]  可选的后备值（找不到时返回）
  * @returns {*}
  *
@@ -532,6 +532,6 @@ export default {
   onCleanup,
   createSignal,
   createComputed,
-  provide,
+  share,
   want,
 };

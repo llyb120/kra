@@ -68,6 +68,8 @@ user({ name: 'Bob', age: 30 });
 items(prev => [...prev, 4]);
 ```
 
+和react的useState唯一区别：永远使用函数（不论是read还是write）
+
 #### 非追踪读取
 
 使用 `.peek()` 可在不建立依赖关系的情况下读取值：
@@ -203,6 +205,8 @@ const updateProfile = () => {
 ### 依赖注入
 
 使用 `share` 和 `want` 实现跨层级数据传递：
+
+数据流动方向永远是 祖辈 -> 孙辈
 
 ```jsx
 const Parent = component(function Parent() {

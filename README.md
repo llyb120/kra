@@ -9,7 +9,7 @@
 - **细粒度更新**：状态变化直接触发依赖该状态的组件重新渲染
 - **自动依赖追踪**：无需手动声明依赖数组
 - **零学习成本**：API 简洁直观，与 React 生态无缝集成
-- **轻量级**：核心代码不足 300 行
+- **轻量级**：核心代码不足 100 行
 
 ## 安装
 
@@ -79,7 +79,7 @@ count.peek(); // 读取值但不建立追踪
 
 `unit()` 函数将普通函数转换为 React 组件，提供响应式状态管理能力。
 
-#### Setup + Render 模式（推荐）
+`unit()` 的 setup 函数**必须返回一个渲染函数** `() => JSX`。setup 阶段仅执行一次，渲染函数在状态变化时重新执行。
 
 ```jsx
 const Counter = unit(() => {
@@ -99,14 +99,7 @@ const Counter = unit(() => {
 });
 ```
 
-#### 简化模式
-
-```jsx
-const Counter = unit(() => {
-  const count = signal(0);
-  return <button onClick={() => count(c => c + 1)}>{count()}</button>;
-});
-```
+> **注意**：直接返回 JSX（而非返回渲染函数）会抛出错误。请始终使用 `return () => <JSX />` 的形式。
 
 ### Effect
 

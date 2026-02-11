@@ -1,9 +1,8 @@
 /**
  * kraReact 集成测试
  *
- * 覆盖两种模式：
- *   模式 A：return () => JSX（setup 真正只执行一次）
- *   模式 B：return JSX（signal/effect 索引复用）
+ * unit() 只支持 setup + render 模式：return () => JSX
+ * 直接返回 JSX 会抛出错误。
  */
 
 import React from 'react';
@@ -22,9 +21,9 @@ import {
 afterEach(cleanup);
 
 // ============================================================
-//  模式 A：return () => JSX
+//  setup + render 模式：return () => JSX
 // ============================================================
-describe('模式 A: return () => JSX', () => {
+describe('setup + render: return () => JSX', () => {
   it('应渲染初始值', () => {
     const App = unit(function App() {
       const count = signal(42);
@@ -180,88 +179,35 @@ describe('模式 A: return () => JSX', () => {
 });
 
 // ============================================================
-//  模式 B：return JSX（直接返回）
+//  直接返回 JSX 应报错
 // ============================================================
-describe('模式 B: return JSX', () => {
-  it('应渲染初始值', () => {
+describe('直接返回 JSX 应报错', () => {
+  it('setup 返回非函数值时应抛出错误', () => {
     const App = unit(function App() {
       const count = signal(42);
-      return <div data-testid="value">{count()}</div>;
+      return <div>{count()}</div>;
     });
-    render(<App />);
-    expect(screen.getByTestId('value').textContent).toBe('42');
+    expect(() => {
+      render(<App />);
+    }).toThrow('[kra]');
   });
 
-  it('信号变化时更新渲染', async () => {
-    const App = unit(function App() {
-      const count = signal(0);
-      return (
-        <div>
-          <span data-testid="count">{count()}</span>
-          <button data-testid="inc" onClick={() => count(count() + 1)}>+</button>
-        </div>
-      );
+  it('错误信息应包含函数名', () => {
+    const MyComp = unit(function MyComp() {
+      return <div>hello</div>;
     });
-    render(<App />);
-    expect(screen.getByTestId('count').textContent).toBe('0');
-
-    await act(() => { fireEvent.click(screen.getByTestId('inc')); });
-    expect(screen.getByTestId('count').textContent).toBe('1');
+    expect(() => {
+      render(<MyComp />);
+    }).toThrow('MyComp');
   });
 
-  it('多个 signal 正常工作', async () => {
-    const App = unit(function App() {
-      const a = signal(1);
-      const b = signal(10);
-      return (
-        <div>
-          <span data-testid="sum">{a() + b()}</span>
-          <button data-testid="ia" onClick={() => a(a() + 1)}>+a</button>
-          <button data-testid="ib" onClick={() => b(b() + 10)}>+b</button>
-        </div>
-      );
+  it('匿名函数也应报错', () => {
+    const App = unit(() => {
+      return <div>hello</div>;
     });
-    render(<App />);
-    expect(screen.getByTestId('sum').textContent).toBe('11');
-
-    await act(() => { fireEvent.click(screen.getByTestId('ia')); });
-    expect(screen.getByTestId('sum').textContent).toBe('12');
-
-    await act(() => { fireEvent.click(screen.getByTestId('ib')); });
-    expect(screen.getByTestId('sum').textContent).toBe('22');
-  });
-
-  it('createEffect 通过索引复用正常工作', async () => {
-    const spy = vi.fn();
-    const App = unit(function App() {
-      const count = signal(0);
-      createEffect(() => { spy(count()); });
-      return (
-        <button data-testid="inc" onClick={() => count(count() + 1)}>+</button>
-      );
-    });
-    render(<App />);
-    expect(spy).toHaveBeenCalledWith(0);
-
-    await act(() => { fireEvent.click(screen.getByTestId('inc')); });
-    expect(spy).toHaveBeenCalledWith(1);
-  });
-
-  it('函数式更新', async () => {
-    const App = unit(function App() {
-      const items = signal([]);
-      return (
-        <div>
-          <span data-testid="len">{items().length}</span>
-          <button data-testid="add" onClick={() => items((p) => [...p, 'x'])}>add</button>
-        </div>
-      );
-    });
-    render(<App />);
-    expect(screen.getByTestId('len').textContent).toBe('0');
-
-    await act(() => { fireEvent.click(screen.getByTestId('add')); });
-    expect(screen.getByTestId('len').textContent).toBe('1');
+    expect(() => {
+      render(<App />);
+    }).toThrow('anonymous');
   });
 });
 

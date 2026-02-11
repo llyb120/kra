@@ -22,7 +22,7 @@ import {
 const Counter = unit(function Counter() {
   const count = signal(0);
 
-  return (
+  return () => (
     <div>
       <h3>基础计数器</h3>
       <p>计数: {count()}</p>
@@ -99,15 +99,15 @@ const globalCount = signal(0);
 const globalDoubled = () => globalCount() * 2;
 
 const DisplayA = unit(function DisplayA() {
-  return <p>组件A - 全局计数: {globalCount()}</p>;
+  return () => <p>组件A - 全局计数: {globalCount()}</p>;
 });
 
 const DisplayB = unit(function DisplayB() {
-  return <p>组件B - 双倍值: {globalDoubled()}</p>;
+  return () => <p>组件B - 双倍值: {globalDoubled()}</p>;
 });
 
 const GlobalControls = unit(function GlobalControls() {
-  return (
+  return () => (
     <div>
       <h3>全局共享状态（无需 observer）</h3>
       <button onClick={() => globalCount(globalCount.peek() + 1)}>全局 +1</button>
@@ -126,7 +126,7 @@ const BatchExample = unit(function BatchExample() {
   const lastName = signal('');
   const fullName = () => `${firstName()} ${lastName()}`.trim();
 
-  return (
+  return () => (
     <div>
       <h3>批量更新</h3>
       <p>全名: {fullName() || '(未输入)'}</p>
@@ -146,7 +146,7 @@ const BatchExample = unit(function BatchExample() {
 const FunctionalUpdate = unit(function FunctionalUpdate() {
   const items = signal([]);
 
-  return (
+  return () => (
     <div>
       <h3>函数式更新</h3>
       <button onClick={() => items((prev) => [...prev, `项目 ${prev.length + 1}`])}>

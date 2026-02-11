@@ -1,6 +1,6 @@
-import {component, share, signal, slot} from "./kra"
+import {unit, share, signal, slot} from "./kra"
 
-const Counter = component((props) => {
+const Counter = unit((props) => {
     const count2 = want("count2"); // must be provided，如果不存在直接报错
     const count = want("count", () => single); // 如果不存在，返回single的默认值
   
@@ -16,7 +16,7 @@ const Counter = component((props) => {
   });
 
 
-const child = component(() => {
+const child = unit(() => {
 
     const count = single(0)
     const count2 = single(0)

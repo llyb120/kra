@@ -14,7 +14,7 @@ import {
   createSignal,
   createComputed,
   createEffect,
-  component,
+  unit,
   batch,
   onCleanup,
 } from './kra.js';
@@ -26,7 +26,7 @@ afterEach(cleanup);
 // ============================================================
 describe('模式 A: return () => JSX', () => {
   it('应渲染初始值', () => {
-    const App = component(function App() {
+    const App = unit(function App() {
       const count = signal(42);
       return () => <div data-testid="value">{count()}</div>;
     });
@@ -35,7 +35,7 @@ describe('模式 A: return () => JSX', () => {
   });
 
   it('信号变化时更新渲染', async () => {
-    const App = component(function App() {
+    const App = unit(function App() {
       const count = signal(0);
       return () => (
         <div>
@@ -56,7 +56,7 @@ describe('模式 A: return () => JSX', () => {
 
   it('setup 只执行一次', async () => {
     const setupSpy = vi.fn();
-    const App = component(function App() {
+    const App = unit(function App() {
       const count = signal(0);
       setupSpy(); // 应只调用一次
       return () => (
@@ -75,7 +75,7 @@ describe('模式 A: return () => JSX', () => {
 
   it('createEffect 在 setup 中注册，信号变化时执行', async () => {
     const spy = vi.fn();
-    const App = component(function App() {
+    const App = unit(function App() {
       const count = signal(0);
       createEffect(() => { spy(count()); });
       return () => (
@@ -94,7 +94,7 @@ describe('模式 A: return () => JSX', () => {
 
   it('onCleanup 在组件卸载时调用', async () => {
     const cleanupSpy = vi.fn();
-    const Child = component(function Child() {
+    const Child = unit(function Child() {
       onCleanup(cleanupSpy);
       return () => <div>child</div>;
     });
@@ -120,7 +120,7 @@ describe('模式 A: return () => JSX', () => {
     const origSetInterval = globalThis.setInterval;
     globalThis.setInterval = (...args) => { intervalCount++; return origSetInterval(...args); };
 
-    const Timer = component(function Timer() {
+    const Timer = unit(function Timer() {
       const count = signal(0);
       const id = setInterval(() => count((c) => c + 1), 100);
       onCleanup(() => clearInterval(id));
@@ -153,7 +153,7 @@ describe('模式 A: return () => JSX', () => {
   });
 
   it('接收 props', () => {
-    const Greet = component(function Greet(props) {
+    const Greet = unit(function Greet(props) {
       return () => <div data-testid="msg">Hello, {props.name}!</div>;
     });
     render(<Greet name="World" />);
@@ -161,7 +161,7 @@ describe('模式 A: return () => JSX', () => {
   });
 
   it('计算属性（普通函数）自动追踪', async () => {
-    const App = component(function App() {
+    const App = unit(function App() {
       const count = signal(5);
       const doubled = () => count() * 2;
       return () => (
@@ -184,7 +184,7 @@ describe('模式 A: return () => JSX', () => {
 // ============================================================
 describe('模式 B: return JSX', () => {
   it('应渲染初始值', () => {
-    const App = component(function App() {
+    const App = unit(function App() {
       const count = signal(42);
       return <div data-testid="value">{count()}</div>;
     });
@@ -193,7 +193,7 @@ describe('模式 B: return JSX', () => {
   });
 
   it('信号变化时更新渲染', async () => {
-    const App = component(function App() {
+    const App = unit(function App() {
       const count = signal(0);
       return (
         <div>
@@ -210,7 +210,7 @@ describe('模式 B: return JSX', () => {
   });
 
   it('多个 signal 正常工作', async () => {
-    const App = component(function App() {
+    const App = unit(function App() {
       const a = signal(1);
       const b = signal(10);
       return (
@@ -233,7 +233,7 @@ describe('模式 B: return JSX', () => {
 
   it('createEffect 通过索引复用正常工作', async () => {
     const spy = vi.fn();
-    const App = component(function App() {
+    const App = unit(function App() {
       const count = signal(0);
       createEffect(() => { spy(count()); });
       return (
@@ -248,7 +248,7 @@ describe('模式 B: return JSX', () => {
   });
 
   it('函数式更新', async () => {
-    const App = component(function App() {
+    const App = unit(function App() {
       const items = signal([]);
       return (
         <div>
@@ -269,9 +269,9 @@ describe('模式 B: return JSX', () => {
 //  全局信号
 // ============================================================
 describe('全局信号', () => {
-  it('component 自动追踪全局信号', async () => {
+  it('unit 自动追踪全局信号', async () => {
     const g = createSignal('hello');
-    const App = component(function App() {
+    const App = unit(function App() {
       return () => <div data-testid="g">{g()}</div>;
     });
     render(<App />);
@@ -281,12 +281,12 @@ describe('全局信号', () => {
     expect(screen.getByTestId('g').textContent).toBe('world');
   });
 
-  it('多个 component 共享全局信号', async () => {
+  it('多个 unit 共享全局信号', async () => {
     const theme = createSignal('light');
-    const A = component(function A() {
+    const A = unit(function A() {
       return () => <span data-testid="a">{theme()}</span>;
     });
-    const B = component(function B() {
+    const B = unit(function B() {
       return () => <span data-testid="b">{theme()}</span>;
     });
 
@@ -309,11 +309,11 @@ describe('全局信号', () => {
 });
 
 // ============================================================
-//  batch + component
+//  batch + unit
 // ============================================================
-describe('batch + component', () => {
+describe('batch + unit', () => {
   it('batch 内多次变更合并渲染', async () => {
-    const App = component(function App() {
+    const App = unit(function App() {
       const a = signal('');
       const b = signal('');
       return () => (

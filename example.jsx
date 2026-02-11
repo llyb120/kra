@@ -8,7 +8,7 @@ import {
   createEffect,
   createSignal,
   createComputed,
-  component,
+  unit,
   batch,
   untrack,
   onCleanup,
@@ -19,7 +19,7 @@ import {
 // ============================================================
 // 示例 1：基础计数器（直接返回 JSX）
 // ============================================================
-const Counter = component(function Counter() {
+const Counter = unit(function Counter() {
   const count = signal(0);
 
   return (
@@ -36,7 +36,7 @@ const Counter = component(function Counter() {
 // ============================================================
 // 示例 2：计算属性 = 普通函数
 // ============================================================
-const PriceCalculator = component(function PriceCalculator() {
+const PriceCalculator = unit(function PriceCalculator() {
   console.log("setup")
 
   const price = signal(100);
@@ -68,7 +68,7 @@ const PriceCalculator = component(function PriceCalculator() {
 // ============================================================
 // 示例 3：自动副作用（返回渲染函数 - 推荐方式）
 // ============================================================
-const AutoLogger = component(function AutoLogger() {
+const AutoLogger = unit(function AutoLogger() {
   const name = signal('');
   const age = signal(0);
   const ext = signal('')
@@ -98,15 +98,15 @@ const AutoLogger = component(function AutoLogger() {
 const globalCount = signal(0);
 const globalDoubled = () => globalCount() * 2;
 
-const DisplayA = component(function DisplayA() {
+const DisplayA = unit(function DisplayA() {
   return <p>组件A - 全局计数: {globalCount()}</p>;
 });
 
-const DisplayB = component(function DisplayB() {
+const DisplayB = unit(function DisplayB() {
   return <p>组件B - 双倍值: {globalDoubled()}</p>;
 });
 
-const GlobalControls = component(function GlobalControls() {
+const GlobalControls = unit(function GlobalControls() {
   return (
     <div>
       <h3>全局共享状态（无需 observer）</h3>
@@ -121,7 +121,7 @@ const GlobalControls = component(function GlobalControls() {
 // ============================================================
 // 示例 5：批量更新 - batch
 // ============================================================
-const BatchExample = component(function BatchExample() {
+const BatchExample = unit(function BatchExample() {
   const firstName = signal('');
   const lastName = signal('');
   const fullName = () => `${firstName()} ${lastName()}`.trim();
@@ -143,7 +143,7 @@ const BatchExample = component(function BatchExample() {
 // ============================================================
 // 示例 6：函数式更新
 // ============================================================
-const FunctionalUpdate = component(function FunctionalUpdate() {
+const FunctionalUpdate = unit(function FunctionalUpdate() {
   const items = signal([]);
 
   return (
@@ -167,7 +167,7 @@ const FunctionalUpdate = component(function FunctionalUpdate() {
 // ============================================================
 // 示例 7：定时器 + onCleanup（返回渲染函数 - 确保 setup 只执行一次）
 // ============================================================
-const TimerDemo = component(function TimerDemo() {
+const TimerDemo = unit(function TimerDemo() {
   const seconds = signal(0);
   const id = setInterval(() => seconds((s) => s + 1), 1000);
   onCleanup(() => clearInterval(id));
@@ -201,7 +201,7 @@ standaloneDemo();
 // ============================================================
 // 示例 9：接收 props
 // ============================================================
-const Greeting = component(function Greeting(props) {
+const Greeting = unit(function Greeting(props) {
   const suffix = signal('!');
 
   return () => (
@@ -217,7 +217,7 @@ const Greeting = component(function Greeting(props) {
 // ============================================================
 
 // 孙组件：直接 want(key) 获取祖辈 share 的值，无需经过中间组件传递
-const ThemeLabel = component(function ThemeLabel() {
+const ThemeLabel = unit(function ThemeLabel() {
   const theme = want('theme');
   // theme 是一个 signal，读取即自动追踪
   return () => (
@@ -232,13 +232,13 @@ const ThemeLabel = component(function ThemeLabel() {
   );
 });
 
-const UserLabel = component(function UserLabel() {
+const UserLabel = unit(function UserLabel() {
   const user = want('user');
   return () => <span>当前用户: {user().name}</span>;
 });
 
 // 中间组件：不需要知道任何 context，直接渲染子组件
-const MiddleLayer = component(function MiddleLayer() {
+const MiddleLayer = unit(function MiddleLayer() {
   return () => (
     <div style={{ padding: 8, border: '1px dashed #ccc', margin: '8px 0' }}>
       <p style={{ color: '#999', fontSize: 12 }}>中间层组件（不接收任何 context props）</p>
@@ -250,7 +250,7 @@ const MiddleLayer = component(function MiddleLayer() {
 });
 
 // 顶层组件：share 数据
-const ContextDemo = component(function ContextDemo() {
+const ContextDemo = unit(function ContextDemo() {
   const theme = signal('light');
   const user = signal({ name: '小明' });
 

@@ -1,19 +1,19 @@
 /**
  * kra- SolidJS 风格的 React 响应式系统
  *
- * component(fn) 中 fn 只执行一次（setup），返回渲染函数 () => JSX。
+ * unit(fn) 中 fn 只执行一次（setup），返回渲染函数 () => JSX。
  * 也可以直接返回 JSX（自动按索引复用 signal/effect，跳过重复副作用）。
  *
  * @example
  *   // 推荐：返回渲染函数（setup 真正只执行一次）
- *   const Counter = component(() => {
+ *   const Counter = unit(() => {
  *     const count = signal(0);
  *     createEffect(() => console.log(count()));
  *     return () => <button onClick={() => count(c=>c+1)}>{count()}</button>;
  *   });
  *
  *   // 简写：直接返回 JSX（也可以，setup 语义由框架保证）
- *   const Counter = component(() => {
+ *   const Counter = unit(() => {
  *     const count = signal(0);
  *     return <button onClick={() => count(c=>c+1)}>{count()}</button>;
  *   });
@@ -118,7 +118,7 @@ const OwnerContext = React.createContext(null);
  * @param {*} value  要注入的值（可以是 signal、普通值、对象等）
  *
  * @example
- *   const Parent = component(() => {
+ *   const Parent = unit(() => {
  *     const theme = signal('dark');
  *     share('theme', theme);
  *     return () => <Child />;
@@ -146,7 +146,7 @@ export function share(key, value) {
  * @returns {*}
  *
  * @example
- *   const Child = component(() => {
+ *   const Child = unit(() => {
  *     const theme = inject('theme');       // signal('dark')
  *     return () => <span>当前主题: {theme()}</span>;
  *   });
@@ -392,13 +392,13 @@ export function onCleanup(fn) {
 // ============================================================
 
 /**
- * component(setupFn) — 将 setup 函数包装为 React 组件。
+ * unit(setupFn) — 将 setup 函数包装为 React 组件。
  *
  * setupFn 可以：
  *   模式 A: return () => JSX  — setup 真正只执行一次（推荐）
  *   模式 B: return JSX        — 自动索引复用（简单组件）
  */
-export function component(setupFn) {
+export function unit(setupFn) {
   const displayName = setupFn.name || 'SuperStateComponent';
 
   function SuperStateComponent(props) {
@@ -526,7 +526,7 @@ export function component(setupFn) {
 export default {
   signal,
   createEffect,
-  component,
+  unit,
   batch,
   untrack,
   onCleanup,

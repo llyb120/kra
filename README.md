@@ -16,15 +16,15 @@
 或直接引入源文件：
 
 ```js
-import { signal, component, createEffect } from './kra.js';
+import { signal, unit, createEffect } from './kra.js';
 ```
 
 ## 快速开始
 
 ```jsx
-import { signal, component } from 'kra';
+import { signal, unit } from 'kra';
 
-const Counter = component(() => {
+const Counter = unit(() => {
   const count = signal(0);
 
   return () => (
@@ -75,14 +75,14 @@ items(prev => [...prev, 4]);
 count.peek(); // 读取值但不建立追踪
 ```
 
-### Component
+### Unit
 
-`component()` 函数将普通函数转换为 React 组件，提供响应式状态管理能力。
+`unit()` 函数将普通函数转换为 React 组件，提供响应式状态管理能力。
 
 #### Setup + Render 模式（推荐）
 
 ```jsx
-const Counter = component(() => {
+const Counter = unit(() => {
   // Setup 阶段：仅执行一次
   const count = signal(0);
 
@@ -102,7 +102,7 @@ const Counter = component(() => {
 #### 简化模式
 
 ```jsx
-const Counter = component(() => {
+const Counter = unit(() => {
   const count = signal(0);
   return <button onClick={() => count(c => c + 1)}>{count()}</button>;
 });
@@ -113,7 +113,7 @@ const Counter = component(() => {
 `createEffect` 创建自动追踪依赖的副作用：
 
 ```jsx
-const UserProfile = component(() => {
+const UserProfile = unit(() => {
   const userId = signal(1);
   const userData = signal(null);
 
@@ -168,12 +168,12 @@ const result = createComputed(() => {
 export const theme = signal('light');
 
 // components/Header.jsx
-export const Header = component(() => {
+export const Header = unit(() => {
   return () => <h1 style={{ color: theme() === 'dark' ? '#fff' : '#000' }}>Header</h1>;
 });
 
 // components/Toggle.jsx
-export const Toggle = component(() => {
+export const Toggle = unit(() => {
   return () => (
     <button onClick={() => theme(t => t === 'light' ? 'dark' : 'light')}>
       Toggle Theme
@@ -199,21 +199,21 @@ const updateProfile = () => {
 };
 ```
 
-### 依赖注入
+### 接口 / 实现
 
 使用 `share` 和 `want` 实现跨层级数据传递：
 
 数据流动方向永远是 祖辈 -> 孙辈
 
 ```jsx
-const Parent = component(() => {
+const Parent = unit(() => {
   const config = signal({ theme: 'dark' });
   share('config', config);
 
   return () => <Child />;
 });
 
-const GrandChild = component(() => {
+const GrandChild = unit(() => {
   const config = want('config');
   return () => <div>Theme: {config().theme}</div>;
 });
@@ -224,7 +224,7 @@ const GrandChild = component(() => {
 使用 `onCleanup` 注册组件卸载时的清理逻辑：
 
 ```jsx
-const Timer = component(() => {
+const Timer = unit(() => {
   const seconds = signal(0);
   const timerId = setInterval(() => seconds(s => s + 1), 1000);
 
@@ -239,7 +239,7 @@ const Timer = component(() => {
 Props 作为普通参数传递，在渲染函数中使用：
 
 ```jsx
-const Button = component(props => {
+const Button = unit(props => {
   const count = signal(0);
 
   return () => (
@@ -284,7 +284,7 @@ count(99); // 无输出
 | `createSignal(value)` | 创建响应式状态（通用） |
 | `createComputed(fn)` | 创建带缓存的计算值 |
 | `createEffect(fn)` | 创建自动追踪的副作用 |
-| `component(fn)` | 将函数包装为响应式组件 |
+| `unit(fn)` | 将函数包装为响应式组件 |
 | `batch(fn)` | 批量更新，合并渲染 |
 | `untrack(fn)` | 执行函数但不追踪依赖 |
 | `onCleanup(fn)` | 注册组件卸载时的清理回调 |
